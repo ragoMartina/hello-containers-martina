@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploynuevo-martina-pyxis
+  namespace: default
+  labels:
+     app: deploynuevo-martina-pyxis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: deploynuevo-martina-pyxis
+  template:
+    metadata:
+      labels:
+        app: deploynuevo-martina-pyxis
+    spec:
+      containers:
+      - name: deploynuevo-martina-pyxis
+        image: us.icr.io/<namespace>/<image>:<tag>
+        ports:
+          - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: servicionuevo-martina-pyxis
+  namespace: default
+spec:
+  type: ClusterIP
+  selector:
+    app: deploynuevo-martina-pyxis
+  ports:
+    - port: 8080
+      targetPort: 8080
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+    name: ruta-martina-pyxis
+    namespace: default
+spec:
+    to:
+        kind: Service
+        name: servicionuevo-martina-pyxis
